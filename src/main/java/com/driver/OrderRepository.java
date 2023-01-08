@@ -82,12 +82,29 @@ public class OrderRepository {
     }
 
     public Integer getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId) {
+        int minuteTime = (Integer.parseInt(time.split(":")[0] ) * 60) + Integer.parseInt(time.split(":")[1]);
         int count = 0;
+        for (String order:partnerOrdersHashMap.get(partnerId)){
+            Order cur = orderHashMap.get(order);
+            int curTime = cur.getDeliveryTime();
+            if (curTime>minuteTime) count++;
+        }
         return count;
     }
 
     public String getLastDeliveryTimeByPartnerId(String partnerId) {
         String time = "";
+        ArrayList<String> orders = partnerOrdersHashMap.get(partnerId);
+        int maxTime = 0;
+
+        for (String order:orders){
+            Order cur = orderHashMap.get(order);
+            int dtime =  cur.getDeliveryTime();
+            if (dtime>maxTime){
+                maxTime = dtime;
+                time = order;
+            }
+        }
         return time;
     }
 
